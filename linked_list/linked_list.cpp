@@ -20,6 +20,7 @@ remove_item(item* head, int index)
     }
 
     if (actual->prox == NULL){
+        std::cout << "You can't remove an item that doesn't exist.\n" << std::endl;
         return;
     }
 
@@ -55,6 +56,11 @@ print_list(item* head)
 {
     item *actual = head->prox;
 
+    if (actual == NULL){
+        std::cout << "The list is empty.\n" << std::endl;
+        return;
+    }
+
     int i = 1;
 
     while (actual != NULL){
@@ -67,26 +73,46 @@ print_list(item* head)
 int
 main()
 {
+    char x; //choice
+    char *value = (char*) (malloc(sizeof(char) * 256));
+    int index;
+
     item *head = (item*) (malloc(sizeof(item)));
     head->prox = NULL;
 
-    char *name_1 = "joao";
-    char *name_2 = "gabriel";
-    char *name_3 = "gutemberg";
-    char *name_4 = "ramon";
+    std::cout << "Hi, select one of the following keys:\n" << std::endl;
 
-    add_item(head, 1, name_1);
-    add_item(head, 2, name_2);
-    add_item(head, 3, name_3);
-    add_item(head, 4, name_4); 
+    while (true) {
+        std::cout << "[P] Print || [I] Insert || [D] Delete || [E] Exit\n" << std::endl;
 
-    print_list(head);
+        std::cin >> x;
 
-    remove_item(head, 2);
-    //char *name_extra = "celio";
-    //add_item(head, 2, name_extra);
+        if (x == 'p' or x == 'P'){
+            print_list(head);
+        }
+        else if (x == 'i' or x == 'I'){
+            std::cout << "Write the string to add in the liked list:\n" << std::endl;
+            std::cin >> value;
 
-    print_list(head);
+            std::cout << "Now, write the index to insert the element:\n" << std::endl;
+            std::cin >> index;
 
-	return 0;
+            add_item(head, index, value);
+        }
+        else if (x == 'd' or x == 'D'){
+            std::cout << "Write the index of the item to delete:\n" << std::endl;
+            std::cin >> index;
+
+            remove_item(head, index);
+        }
+        else if (x == 'e' or x == 'E'){
+            std::cout << "Exiting..." << std::endl;
+            break;
+        }
+        else{
+            std::cout << "Pick one of the options listed.\n" << std::endl;
+        }
+    }
+
+    return 0;
 }
