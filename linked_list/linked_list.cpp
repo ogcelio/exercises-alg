@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string>
+#include <limits>
 
 struct linked_list {
 	char *string;
@@ -74,7 +76,6 @@ int
 main()
 {
     char x; //choice
-    char *value = (char*) (malloc(sizeof(char) * 256));
     int index;
 
     item *head = (item*) (malloc(sizeof(item)));
@@ -91,8 +92,14 @@ main()
             print_list(head);
         }
         else if (x == 'i' or x == 'I'){
-            std::cout << "Write the string to add in the liked list:\n" << std::endl;
-            std::cin >> value;
+            // char *value = (char*) (malloc(sizeof(char) * 256));
+            // std::string value;
+
+            // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            std::cout << "Write the string to add in the linked list:\n" << std::endl;
+            // std::cin >> value;
+            // std::getline(std::cin, value);
 
             std::cout << "Now, write the index to insert the element:\n" << std::endl;
             std::cin >> index;
