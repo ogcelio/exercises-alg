@@ -20,9 +20,9 @@ main()
     no5->dado = 5;
     no4->conexoes[0] = no5;
 
-    printf("%d\n", (ptr) no1->conexoes[1]->conexoes[0]->dado);
+    printf("%d\n", no1->conexoes[1]->conexoes[0]->dado);
     //ou
-    ptr dado_no5 = (ptr) no1->conexoes[1]->conexoes[0]->dado;
+    int dado_no5 = no1->conexoes[1]->conexoes[0]->dado;
     printf("%d\n", dado_no5);
 
     return 0;
