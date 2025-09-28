@@ -1,5 +1,6 @@
 #include "bucket_sort.h"
 #include <algorithm>
+using namespace std;
 
 void
 bucket_sort(int *list, int size)
