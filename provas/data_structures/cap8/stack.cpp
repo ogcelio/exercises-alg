@@ -1,62 +1,80 @@
+#include <cstdlib>
 #include <iostream>
+#include <cstring>
+using namespace std;
 
-struct Node {
-    int data;
-    Node* next;
+struct linked_list{
+  char *data;
+  linked_list *next;
 };
 
-class Stack {
-private:
-    Node* top;
+typedef linked_list* node;
 
-public:
-    Stack() {
-        top = nullptr;
+class stack{
+  private:
+    node top; 
+
+  public:
+    stack() {top = nullptr;}
+
+    void
+    push(char* value)
+    {
+      node tb_added = (node) (malloc(sizeof(linked_list)));
+      tb_added->data = value;
+      tb_added->next = top;
+      top = tb_added;
     }
 
-    bool isEmpty() {
-        return top == nullptr;
+    int
+    pop(char* value)
+    {
+      if (top == nullptr) return -1;
+
+      node tb_removed = top;
+      strcpy(value, top->data);
+
+      top = top->next;
+
+      free(tb_removed);
+
+      return 0;
     }
 
-    void push(int x) {
-        Node* newNode = new Node;
-        newNode->data = x;
-        newNode->next = top;
-        top = newNode;
-    }
+    int
+    peek(char* value)
+    {
+      if (top == nullptr) return -1;
 
-    int pop() {
-        if (isEmpty()) {
-            std::cout << "Error: Stack underflow" << std::endl;
-            return -1;
-        }
-        Node* temp = top;
-        int popped = temp->data;
-        top = top->next;
-        delete temp;
-        return popped;
-    }
-
-    int peek() {
-        if (isEmpty()) {
-            std::cout << "Error: Stack is empty" << std::endl;
-            return -1;
-        }
-        return top->data;
+      strcpy(value, top->data);
+      return 0;
     }
 };
 
-int main() {
-    Stack stack;
-    stack.push(1);
-    stack.push(2);
-    stack.push(3);
+int
+main()
+{
+  stack pilha;
+  pilha.push("joao");
+  pilha.push("celio");
+  pilha.push("araujo");
+  pilha.push("sander");
+  pilha.push("de");
+  
+  char* string = (char*) (malloc(64));
 
-    std::cout << "Top element is: " << stack.peek() << std::endl;
+  pilha.peek(string);
 
-    stack.pop();
+  cout << "ANTES DE REMOVER: " << string << endl;
 
-    std::cout << "Top element is: " << stack.peek() << std::endl;
+  pilha.pop(string);
 
-    return 0;
+  cout << "DADO REMOVIDO: " << string << endl;
+  
+  pilha.peek(string);
+
+  cout << "DEPOIS DE REMOVER: " << string << endl;
+
+  free(string);
+  return 0;
 }
