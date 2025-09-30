@@ -1,5 +1,6 @@
 #include <iostream>
 #include "bucket_sort.h"
+#include "insertion_sort.h"
 using namespace std;
 
 int
@@ -17,7 +18,7 @@ main()
 
     cout << '\n' << endl;
 
-    bucket_sort(list, size);
+    insertion_sort(list, size);
 
     for (i = 0; i < size; i++)
     {
