@@ -3,107 +3,123 @@
 #include <iostream>
 using namespace std;
 
-struct no {
-  char *nome;
-  no *esquerda;
-  no *baixo;
-  no *cima;
-  no *direita;
-  bool visitado;
+struct node {
+    char* name;
+    node* left;
+    node* down;
+    node* up;
+    node* right;
+    bool visited;
 };
 
-struct linked_track {
-  char *track;
-  linked_track *next;
+class track {
+   private:
+    char move;
+
+    track* child[4];
+    track* prev;
+
+    node* final = NULL;
+
+   public:
+    void set_child(track* potential, int index) { child[index] = potential; };
+    void set_move(char choice) { move = choice; }
+
+    void set_final(node* final_node) { final = final_node; }
+
+    node* get_final() { return final; }
+
+    track* roll_back() { return prev; }
+    // int shortest_path(){}
 };
 
-typedef struct linked_track *t;
+void search(char* name_to_find, node* start, track* head) {
+    node* actual = start;
+    unsigned short int i = 0;
 
-no *busca(char *nome_desejado, no *inicio, t head_caminho, int i = 0) {
-  int j;
-  no *atual = inicio;
-
-  atual->visitado = true;
-  for (j = 0; j < 4; j++) {
-    if (atual->nome != NULL) {
-      t t_atual = head_caminho->next;
-      if (strcmp(atual->nome, nome_desejado) == 0) {
-        t_atual->track[i] = 'f';
-        continue;
-        return atual;
-      }
+    if (actual->name != NULL) {
+        if (strcmp(actual->name, name_to_find)) {
+            head->set_final(actual);
+        }
     }
 
-    if (atual->esquerda != NULL && atual->esquerda->visitado != true) {
-      t_atual->track[i] = 'e';
-      i++;
-      return busca(nome_desejado, atual->esquerda, caminho, max_passos, i);
+    actual->visited = true;
+
+    if (actual->left != NULL && actual->left->visited != true) {
+        track* potential = (track*)(malloc(sizeof(track)));
+        potential->set_move('l');
+        head->set_child(potential, i);
+        i++;
+
+        search(name_to_find, actual->left, potential);
     }
 
-    if (atual->baixo != NULL && atual->baixo->visitado != true) {
-      t_atual->track[i] = 'b';
-      i++;
-      return busca(nome_desejado, atual->baixo, caminho, max_passos, i);
+    if (actual->down != NULL && actual->down->visited != true) {
+        track* potential = (track*)(malloc(sizeof(track)));
+        potential->set_move('d');
+        head->set_child(potential, i);
+        i++;
+
+        search(name_to_find, actual->down, potential);
     }
-    if (atual->cima != NULL && atual->cima->visitado != true) {
-      t_atual->track[i] = 'c';
-      i++;
-      return busca(nome_desejado, atual->cima, caminho, max_passos, i);
+
+    if (actual->up != NULL && actual->up->visited != true) {
+        track* potential = (track*)(malloc(sizeof(track)));
+        potential->set_move('u');
+        head->set_child(potential, i);
+        i++;
+
+        search(name_to_find, actual->up, potential);
     }
-    if (atual->direita != NULL && atual->direita->visitado != true) {
-      t_atual->track[i] = 'd';
-      i++;
-      return busca(nome_desejado, atual->direita, caminho, max_passos, i);
+
+    if (actual->right != NULL && actual->right->visited != true) {
+        track* potential = (track*)(malloc(sizeof(track)));
+        potential->set_move('r');
+        head->set_child(potential, i);
+        i++;
+
+        search(name_to_find, actual->right, potential);
     }
-  }
 }
 
-void inserir_nome(no *node, char *name, int size) {
-  node->nome = (char *)(malloc(sizeof(size + 1)));
-  strcpy(node->nome, name);
+void insert_name(node* head, char* string, int size) {
+    head->name = (char*)(malloc(sizeof(size + 1)));
+    strcpy(head->name, string);
 }
 
 int main() {
-  no *inicio = (no *)(malloc(sizeof(no)));
+    node* inicio = (node*)(malloc(sizeof(node)));
 
-  no *bisecao = (no *)(malloc(sizeof(no)));
-  inicio->direita = bisecao;
+    node* bisecao = (node*)(malloc(sizeof(node)));
+    inicio->right = bisecao;
 
-  no *moedas = (no *)(malloc(sizeof(no)));
-  bisecao->cima = moedas;
-  bisecao->esquerda = inicio;
-  inserir_nome(moedas, "moedas", 6);
+    node* moedas = (node*)(malloc(sizeof(node)));
+    bisecao->up = moedas;
+    bisecao->left = inicio;
+    insert_name(moedas, "moedas", 6);
 
-  no *vazio = (no *)(malloc(sizeof(no)));
-  bisecao->baixo = vazio;
-  moedas->baixo = vazio;
-  vazio->cima = moedas;
+    node* vazio = (node*)(malloc(sizeof(node)));
+    bisecao->down = vazio;
+    moedas->down = vazio;
+    vazio->up = moedas;
 
-  no *boss = (no *)(malloc(sizeof(no)));
-  boss->cima = moedas;
-  boss->baixo = vazio;
-  vazio->direita = boss;
-  moedas->direita = boss;
-  inserir_nome(boss, "boss", 4);
+    node* boss = (node*)(malloc(sizeof(node)));
+    boss->up = moedas;
+    boss->down = vazio;
+    vazio->right = boss;
+    moedas->right = boss;
+    insert_name(boss, "boss", 4);
 
-  no *fim = (no *)(malloc(sizeof(no)));
-  fim->esquerda = boss;
-  boss->direita = fim;
-  inserir_nome(fim, "game over", 9);
+    node* fim = (node*)(malloc(sizeof(node)));
+    fim->left = boss;
+    boss->left = fim;
+    insert_name(fim, "game over", 9);
 
-  no *resultado = (no *)(malloc(sizeof(no)));
-  inserir_nome(resultado, " ", 9);
+    node* resultado = (node*)(malloc(sizeof(node)));
+    insert_name(resultado, " ", 9);
 
-  unsigned int max_passos = 10;
-  char *caminho = (char *)(malloc(max_passos + 1));
-  resultado = busca("game over", inicio, caminho, max_passos);
+    track* path = (track*)(malloc(sizeof(track)));
+    search("game over", inicio, path);
 
-  if (resultado->nome != NULL) {
-    cout << "Nome no Nodo: " << resultado->nome << endl;
-  }
-
-  cout << "Caminho: " << caminho << endl;
-  cout << "Numero de Passos: " << strlen(caminho) - 1 << endl;
-
-  return 0;
+    return 0;
 }
