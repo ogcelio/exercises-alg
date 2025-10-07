@@ -3,6 +3,8 @@
 #include <iostream>
 using namespace std;
 
+#define MAX_PASSOS 40
+
 struct node {
     char* name;
     node* left;
@@ -22,16 +24,47 @@ class track {
     node* final = NULL;
 
    public:
-    void set_child(track* potential, int index) { child[index] = potential; };
+    void set_child(track* potential, int index) {
+        child[index] = potential;
+        child[index]->prev = this;
+    };
     void set_move(char choice) { move = choice; }
 
     void set_final(node* final_node) { final = final_node; }
 
+    char get_move() { return move; }
+
     node* get_final() { return final; }
 
     track* roll_back() { return prev; }
-    // int shortest_path(){}
+    track* get_child(int index) { return child[index]; }
 };
+
+void shortest_path(track* start) {
+    unsigned int i, j;
+    unsigned int num_steps = 0;
+
+    track* actual = (track*)(malloc(sizeof(track)));
+    char* inverse_path = (char*)(malloc(MAX_PASSOS));
+
+    for (i = 0; i < 4; i++) {
+        actual = start->get_child(i);
+        if (actual != NULL) {
+            if (actual->get_final() != NULL) {
+                j = 0;
+                while (actual->roll_back() != NULL) {
+                    inverse_path[j] = actual->get_move();
+                    j++;
+                    actual = actual->roll_back();
+                }
+                cout << "inverse path " << inverse_path << " steps: " << j
+                     << endl;
+            } else {
+                shortest_path(actual);
+            }
+        }
+    }
+}
 
 void search(char* name_to_find, node* start, track* head) {
     node* actual = start;
@@ -40,6 +73,7 @@ void search(char* name_to_find, node* start, track* head) {
     if (actual->name != NULL) {
         if (strcmp(actual->name, name_to_find)) {
             head->set_final(actual);
+            return;
         }
     }
 
@@ -102,6 +136,7 @@ int main() {
     bisecao->down = vazio;
     moedas->down = vazio;
     vazio->up = moedas;
+    vazio->left = bisecao;
 
     node* boss = (node*)(malloc(sizeof(node)));
     boss->up = moedas;
@@ -112,7 +147,7 @@ int main() {
 
     node* fim = (node*)(malloc(sizeof(node)));
     fim->left = boss;
-    boss->left = fim;
+    boss->right = fim;
     insert_name(fim, "game over", 9);
 
     node* resultado = (node*)(malloc(sizeof(node)));
@@ -120,6 +155,8 @@ int main() {
 
     track* path = (track*)(malloc(sizeof(track)));
     search("game over", inicio, path);
+
+    shortest_path(path);
 
     return 0;
 }
